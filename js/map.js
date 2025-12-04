@@ -106,6 +106,7 @@ function updateWeatherPanel(data, name) {
   const wind = document.getElementById("windSpeed");
   const sunrise = document.getElementById("sunriseTime");
   const sunset = document.getElementById("sunsetTime");
+  const localTime = document.getElementById("localTime");
   const updated = document.getElementById("updatedAt");
 
   if (!data || !data.main) return;
@@ -118,21 +119,24 @@ function updateWeatherPanel(data, name) {
   humid.textContent = `${data.main.humidity}%`;
   wind.textContent = `${data.wind.speed} m/s`;
 
-  if (data.sys && data.sys.sunrise && data.sys.sunset) {
-    sunrise.textContent = new Date(data.sys.sunrise * 1000).toLocaleTimeString(
-      [],
-      { hour: "2-digit", minute: "2-digit" }
-    );
-    sunset.textContent = new Date(data.sys.sunset * 1000).toLocaleTimeString(
-      [],
-      { hour: "2-digit", minute: "2-digit" }
-    );
-  } else {
-    sunrise.textContent = "--:--";
-    sunset.textContent = "--:--";
+  const tzOffset = typeof data.timezone === "number" ? data.timezone : 0;
+
+  sunrise.textContent =
+    data.sys && data.sys.sunrise && data.timezone !== undefined
+      ? formatTimeWithOffset(data.sys.sunrise, tzOffset)
+      : "--:--";
+  sunset.textContent =
+    data.sys && data.sys.sunset && data.timezone !== undefined
+      ? formatTimeWithOffset(data.sys.sunset, tzOffset)
+      : "--:--";
+
+  if (localTime) {
+    localTime.textContent = formatCurrentLocalTime(tzOffset);
   }
 
-  updated.textContent = `Updated: ${new Date().toLocaleTimeString()}`;
+  updated.textContent = data.dt
+    ? `Updated: ${formatTimeWithOffset(data.dt, tzOffset)} (local)`
+    : `Updated: ${new Date().toLocaleTimeString()}`;
 }
 
 function setWeatherOverlay(type) {
@@ -151,6 +155,21 @@ function setWeatherOverlay(type) {
     });
     map.overlayMapTypes.insertAt(0, weatherLayer);
   }
+}
+
+function formatTimeWithOffset(utcSeconds, offsetSeconds) {
+  const targetMs = (utcSeconds + offsetSeconds) * 1000;
+  // Use UTC here because we've already shifted to the target timezone.
+  return new Date(targetMs).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "UTC",
+  });
+}
+
+function formatCurrentLocalTime(offsetSeconds) {
+  const utcNowSeconds = Math.floor(Date.now() / 1000);
+  return formatTimeWithOffset(utcNowSeconds, offsetSeconds);
 }
 
 window.onload = initMap;
