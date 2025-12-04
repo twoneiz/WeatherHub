@@ -531,22 +531,22 @@ function formatDay(utcSeconds, offsetSeconds) {
 
 function degreesToCardinal(deg) {
   const directions = [
-    "N",
-    "NNE",
-    "NE",
-    "ENE",
-    "E",
-    "ESE",
-    "SE",
-    "SSE",
-    "S",
-    "SSW",
-    "SW",
-    "WSW",
-    "W",
-    "WNW",
-    "NW",
-    "NNW",
+    "North",
+    "North-Northeast",
+    "Northeast",
+    "East-Northeast",
+    "East",
+    "East-Southeast",
+    "Southeast",
+    "South-Southeast",
+    "South",
+    "South-Southwest",
+    "Southwest",
+    "West-Southwest",
+    "West",
+    "West-Northwest",
+    "Northwest",
+    "North-Northwest",
   ];
   const index = Math.round(deg / 22.5) % 16;
   return directions[index];
@@ -555,7 +555,7 @@ function degreesToCardinal(deg) {
 function renderHourlyForecast(hourlyData, tzOffset) {
   const container = document.getElementById("hourlyForecast");
   const caption = document.getElementById("forecastCaption");
-  if (caption) caption.textContent = "Next 5 Hour";
+  if (caption) caption.textContent = "Next 3 Hour";
   if (!container) return;
   container.innerHTML = "";
   if (!Array.isArray(hourlyData)) return;

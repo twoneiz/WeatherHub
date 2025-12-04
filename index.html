@@ -32,9 +32,8 @@
     <div class="row g-3">
       <div class="col-lg-8">
         <div class="mb-2 d-flex flex-wrap align-items-center control-row">
-          <input type="text" id="mapSearch" class="form-control" placeholder="Search for a location...">
           <select id="weatherLayerSelect" class="form-select form-select-sm" style="max-width:220px;">
-            <option value="none">No overlay</option>
+            <option value="none">Overlay</option>
             <option value="clouds_new">Clouds</option>
             <option value="precipitation_new">Rain</option>
             <option value="temp_new">Temperature</option>
@@ -115,7 +114,7 @@
             <div class="col-6">
               <div class="stat-tile d-flex justify-content-between align-items-center p-2">
                 <div>
-                  <div class="small text-uppercase translatable">Wind Dir</div>
+                  <div class="small text-uppercase translatable">Wind Directions</div>
                   <div class="fw-semibold" id="windDirection">--</div>
                 </div>
                 <i class="bi bi-compass"></i>
