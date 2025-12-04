@@ -1,0 +1,208 @@
+:root {
+  /* Light theme */
+  --bg: #eaf2fb;
+  --bg-layer: radial-gradient(circle at 20% 20%, rgba(66, 165, 245, 0.2), transparent 32%),
+    radial-gradient(circle at 80% 0%, rgba(116, 235, 213, 0.18), transparent 36%),
+    linear-gradient(135deg, #eaf2fb 0%, #dce5f5 100%);
+  --surface: #ffffff;
+  --surface-strong: #f5f7fb;
+  --text: #0f172a;
+  --muted: #5b6472;
+  --divider: rgba(15, 23, 42, 0.08);
+  --primary: #2a9d8f;
+  --accent: linear-gradient(135deg, #74ebd5 0%, #42a5f5 100%);
+  --shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+}
+
+body.dark-mode {
+  --bg: #0c1424;
+  --bg-layer: radial-gradient(circle at 20% 20%, rgba(66, 165, 245, 0.12), transparent 32%),
+    radial-gradient(circle at 80% 0%, rgba(116, 235, 213, 0.12), transparent 36%),
+    linear-gradient(135deg, #0c1424 0%, #0b1220 100%);
+  --surface: rgba(18, 27, 44, 0.92);
+  --surface-strong: rgba(18, 27, 44, 0.85);
+  --text: #e3eaf5;
+  --muted: #98a4b5;
+  --divider: rgba(227, 234, 245, 0.08);
+  --primary: #45c4b0;
+  --accent: linear-gradient(135deg, #1c9cf6 0%, #45c4b0 100%);
+  --shadow: 0 16px 40px rgba(6, 8, 20, 0.55);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg-layer);
+  color: var(--text);
+  transition: background 0.35s ease, color 0.35s ease;
+  padding-bottom: 2rem;
+}
+
+/* Header */
+.glass-navbar {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: var(--shadow);
+  border-radius: 0 0 18px 18px;
+  color: var(--text);
+}
+
+body.dark-mode .glass-navbar {
+  background: rgba(15, 23, 42, 0.65);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #eaf2fb;
+}
+
+.navbar-logo {
+  width: 42px;
+  height: 42px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.5rem;
+  box-shadow: 0 12px 25px rgba(66, 165, 245, 0.25);
+}
+
+.glass-navbar .fw-bold,
+.glass-navbar i {
+  color: inherit;
+}
+
+.glass-navbar .form-select,
+.glass-navbar .btn {
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: none;
+}
+
+body.dark-mode .glass-navbar .form-select,
+body.dark-mode .glass-navbar .btn {
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #eaf2fb;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Layout */
+main {
+  margin-top: 0.5rem;
+}
+
+.control-row {
+  gap: 0.75rem;
+}
+
+.pill {
+  border-radius: 14px;
+  border: 1px solid var(--divider);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.form-control,
+.form-select,
+.btn {
+  border-radius: 12px;
+  border: 1px solid var(--divider);
+  box-shadow: none;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.form-select {
+  min-width: 180px;
+}
+
+.form-control:focus,
+.form-select:focus,
+.btn:focus {
+  box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.25);
+  border-color: #42a5f5;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .btn {
+  background: var(--surface-strong);
+  color: var(--text);
+  border-color: var(--divider);
+}
+
+#map {
+  width: 100%;
+  height: 520px;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--divider);
+  overflow: hidden;
+}
+
+.weather-main-card {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 1.6rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--divider);
+}
+
+.weather-main-card .small {
+  color: var(--muted);
+  letter-spacing: 0.3px;
+}
+
+#weatherMain {
+  color: var(--muted);
+  letter-spacing: 0.25px;
+}
+
+#updatedAt {
+  color: var(--muted);
+}
+
+.surface-divider {
+  border-top: 1px dashed var(--divider);
+  margin: 0.75rem 0;
+}
+
+.btn-light {
+  background: var(--surface-strong);
+  border-color: var(--divider);
+}
+
+.weather-popup {
+  min-width: 220px;
+  color: #0f172a;
+}
+
+/* Hover & micro-interactions */
+.weather-main-card:hover,
+#map:hover {
+  transform: translateY(-2px);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  box-shadow: 0 22px 50px rgba(15, 23, 42, 0.28);
+}
+
+.control-row .form-control,
+.control-row .form-select {
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.control-row .form-control:focus,
+.control-row .form-select:focus {
+  transform: translateY(-1px);
+}
+
+/* Utility */
+.text-muted {
+  color: var(--muted) !important;
+}
+
+@media (max-width: 991px) {
+  .form-select {
+    min-width: 140px;
+  }
+  #map {
+    height: 420px;
+  }
+}
