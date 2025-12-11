@@ -1,6 +1,11 @@
-const GOOGLE_TRANSLATE_API_KEY = "AIzaSyA4GymxbXBaasNQd-Gl5XnztNBKs334kpM";
+const CONFIG = window.CONFIG || {};
+const GOOGLE_TRANSLATE_API_KEY = CONFIG.googleTranslateApiKey;
 
 function translateText(text, targetLang, callback) {
+  if (!GOOGLE_TRANSLATE_API_KEY) {
+    console.warn("Google Translate API key missing in config.js. Skipping translation.");
+    return callback(text);
+  }
   if (Array.isArray(text)) {
     fetch(`https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`, {
       method: "POST",
@@ -60,6 +65,12 @@ function translateAll(targetLang, callback) {
 function initTranslation() {
   const select = document.getElementById('languageSelect');
   if (!select) return;
+
+  // Populate language options
+  if (!GOOGLE_TRANSLATE_API_KEY) {
+    translateAll('en');
+    return;
+  }
 
   fetch(`https://translation.googleapis.com/language/translate/v2/languages?key=${GOOGLE_TRANSLATE_API_KEY}&target=en`)
     .then(res => res.json())

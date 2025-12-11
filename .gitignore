@@ -1,0 +1,6 @@
+# Local secrets/config (copy from config.example.js and do not commit)
+config.js
+
+# OS cruft
+Thumbs.db
+.DS_Store

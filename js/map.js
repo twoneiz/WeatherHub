@@ -1,4 +1,6 @@
-const OPENWEATHER_API_KEY = "d38fbf146ca1ece59539858de00b1e49";
+const CONFIG = window.CONFIG || {};
+const OPENWEATHER_API_KEY = CONFIG.openWeatherApiKey;
+const GOOGLE_MAPS_API_KEY = CONFIG.googleMapsApiKey;
 
 let map, marker, infowindow;
 let weatherLayer = null;
@@ -7,6 +9,42 @@ let lastForecastData = null;
 let lastForecast5Data = null;
 let lastLocationName = "";
 let lastTzOffset = 0;
+
+function showMapError(message) {
+  const mapEl = document.getElementById("map");
+  if (mapEl) {
+    mapEl.innerHTML = `<div class="p-3 text-center text-danger small">${message}</div>`;
+  }
+}
+
+function showWeatherError(message) {
+  const loc = document.getElementById("locationName");
+  if (loc) loc.textContent = message;
+}
+
+function loadGoogleMaps() {
+  if (!GOOGLE_MAPS_API_KEY) {
+    const msg = "Missing googleMapsApiKey in config.js. Add your key to run the map.";
+    console.error(msg);
+    showMapError(msg);
+    return Promise.reject(new Error(msg));
+  }
+  if (window.google && window.google.maps) {
+    return Promise.resolve();
+  }
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onerror = () => {
+      const msg = "Failed to load Google Maps. Check your API key.";
+      showMapError(msg);
+      reject(new Error(msg));
+    };
+    script.onload = () => resolve();
+    document.head.appendChild(script);
+  });
+}
 
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -29,20 +67,22 @@ function initMap() {
   }
 
   const input = document.getElementById("mapSearch");
-  const searchBox = new google.maps.places.SearchBox(input);
+  if (input) {
+    const searchBox = new google.maps.places.SearchBox(input);
 
-  searchBox.addListener("places_changed", function () {
-    const places = searchBox.getPlaces();
-    if (places.length === 0) return;
-    const place = places[0];
-    map.setCenter(place.geometry.location);
-    placeMarker(place.geometry.location);
-    fetchWeather(
-      place.geometry.location.lat(),
-      place.geometry.location.lng(),
-      place.formatted_address || place.name
-    );
-  });
+    searchBox.addListener("places_changed", function () {
+      const places = searchBox.getPlaces();
+      if (places.length === 0) return;
+      const place = places[0];
+      map.setCenter(place.geometry.location);
+      placeMarker(place.geometry.location);
+      fetchWeather(
+        place.geometry.location.lat(),
+        place.geometry.location.lng(),
+        place.formatted_address || place.name
+      );
+    });
+  }
 
   const locateBtn = document.getElementById("locateBtn");
   if (locateBtn && navigator.geolocation) {
@@ -79,6 +119,13 @@ function placeMarker(location) {
 }
 
 function fetchWeather(lat, lon, overrideName) {
+  if (!OPENWEATHER_API_KEY) {
+    const msg = "Missing OpenWeather API key in config.js. Weather data cannot be loaded.";
+    console.error(msg);
+    showWeatherError(msg);
+    return;
+  }
+
   const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`;
   const oneCallUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric&exclude=minutely,alerts`;
   const forecast5Url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`;
@@ -624,4 +671,10 @@ function renderDailyForecast(dailyData, tzOffset) {
   });
 }
 
-window.onload = initMap;
+document.addEventListener("DOMContentLoaded", () => {
+  loadGoogleMaps()
+    .then(() => initMap())
+    .catch(() => {
+      // Error already surfaced in loadGoogleMaps
+    });
+});
